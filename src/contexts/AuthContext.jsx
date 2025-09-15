@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react"
+import { toast } from "react-toastify"
 
 const AuthContext = createContext()
 
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token')
     setIsAuthenticated(false)
+    toast.info("Logged out")
   }
 
   const getToken = () => {

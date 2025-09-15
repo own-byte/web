@@ -31,36 +31,36 @@ function Register() {
   }
   
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen bg-bg flex items-center justify-center">
       <div className="max-w-md w-full mx-4">
-        <div className="bg-[#292A2A] p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-center text-[#fdfcfb]">Register</h2>
+        <div className="bg-bg-secondary p-8 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">Register</h2>
           
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <input 
               ref={nameRef} 
-              className="w-full px-3 py-2 bg-black text-[#fdfcfb] border border-[#fdfcfb] rounded-md focus:outline-none focus:border-[#724E91]" 
+              className="w-full px-3 py-2 bg-bg-secondary text-text-primary border border-line rounded-md focus:outline-none focus:border-purple-secondary" 
               type="text" 
               placeholder="Your name" 
               required
             />
             <input 
               ref={emailRef} 
-              className="w-full px-3 py-2 bg-black text-[#fdfcfb] border border-[#fdfcfb] rounded-md focus:outline-none focus:border-[#724E91]" 
+              className="w-full px-3 py-2 bg-bg-secondary text-text-primary border border-line rounded-md focus:outline-none focus:border-purple-secondary" 
               type="email" 
               placeholder="Email" 
               required
             />
             <input 
               ref={passwordRef} 
-              className="w-full px-3 py-2 bg-black text-[#fdfcfb] border border-[#fdfcfb] rounded-md focus:outline-none focus:border-[#724E91]" 
+              className="w-full px-3 py-2 bg-bg-secondary text-text-primary border border-line rounded-md focus:outline-none focus:border-purple-secondary" 
               type="password" 
               placeholder="Password" 
               required
             />
             <button 
               type="submit"
-              className="w-full mt-2 bg-[#724E91] text-white py-2 px-4 rounded-md hover:bg-purple-600 transition-colors"
+              className="w-full mt-2 bg-purple-primary text-white py-2 px-4 rounded-md cursor-pointer"
             >
               Register
             </button>
@@ -69,7 +69,7 @@ function Register() {
           <div className="mt-4 text-center">
             <Link
               to="/login"
-              className="text-[#724E91] hover:text-purple-600 text-sm"
+              className="text-text-secondary hover:text-purple-secondary text-sm"
             >
               Do you have an account? Log in
             </Link>
