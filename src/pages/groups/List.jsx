@@ -53,8 +53,8 @@ function List() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-white">Carregando grupos...</div>
+      <div className="min-h-screen flex">
+        <div className="text-text-primary">Loading...</div>
       </div>
     )
   }
@@ -79,7 +79,7 @@ function List() {
                       <p className="text-text-secondary text-sm">{group.description}</p>
                     </div>
                     <div className="bg-purple-secondary text-text-primary px-3 py-1 rounded-full text-sm font-medium">
-                      {/* {group.secrets.quantity} */}
+                      {group.secretsCount}
                     </div>
                   </div>
                 </li>

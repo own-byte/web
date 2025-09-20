@@ -13,10 +13,10 @@ function Login() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    
+
     const email = emailRef.current.value
     const password = passwordRef.current.value
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields')
       return
@@ -28,10 +28,11 @@ function Login() {
       const { data } = await api.post('/auth/login', {
         email: email,
         password: password
+      }, {
+        withCredentials: true
       })
 
       if (data && data.token) {
-        toast.success(data.message) 
         login(data.token)
         navigate('/dashboard')
       } else {
@@ -39,7 +40,7 @@ function Login() {
       }
     } catch (error) {
       console.error('Login error:', error)
-      
+
       if (error.response) {
         toast.error(error.response.data?.message || 'Login error')
       } else if (error.request) {
@@ -57,7 +58,7 @@ function Login() {
       <div className="max-w-md w-full mx-4">
         <div className="bg-bg-secondary p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">Login</h2>
-          
+
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <input
               ref={emailRef}
@@ -75,7 +76,7 @@ function Login() {
               disabled={loading}
               required
             />
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="w-full mt-2 bg-purple-primary text-white py-2 px-4 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -83,10 +84,10 @@ function Login() {
               {loading ? 'Entering...' : 'Login'}
             </button>
           </form>
-          
+
           <div className="mt-4 text-center">
-            <Link 
-              to="/register" 
+            <Link
+              to="/register"
               className="text-text-secondary hover:text-purple-secondary text-sm"
             >
               Don't have an account? Sign up

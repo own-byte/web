@@ -4,9 +4,12 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
 import Register from "./pages/auth/register"
 import Login from "./pages/auth/login"
-import Dashboard from "./pages/global/dashboard"
+import DashboardLayout from "./pages/global/dashboardLayout"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import GroupCreate from "./pages/groups/GroupCreate"
+import SecretCreate from "./pages/secrets/SecretCreate"
+import AllSecrets from "./pages/secrets/AllSecrets"
 
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useAuth()
@@ -50,7 +53,23 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <AllSecrets />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/group/create"
+              element={
+                <ProtectedRoute>
+                  <GroupCreate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/secret/create"
+              element={
+                <ProtectedRoute>
+                  <SecretCreate />
                 </ProtectedRoute>
               }
             />

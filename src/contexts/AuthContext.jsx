@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
   const login = (token) => {
     localStorage.setItem('token', token)
     setIsAuthenticated(true)
+    toast.success("Logged in successfully")
   }
 
   const logout = () => {
