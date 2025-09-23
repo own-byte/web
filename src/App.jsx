@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css"
 import GroupCreate from "./pages/groups/GroupCreate"
 import SecretCreate from "./pages/secrets/SecretCreate"
 import AllSecrets from "./pages/secrets/AllSecrets"
+import GroupSecrets from "./pages/groups/GroupSecrets"
 
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useAuth()
@@ -70,6 +71,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SecretCreate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/group/:id"
+              element={
+                <ProtectedRoute>
+                  <GroupSecrets />
                 </ProtectedRoute>
               }
             />
