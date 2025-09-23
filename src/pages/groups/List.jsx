@@ -72,7 +72,7 @@ function List() {
           {allGroups && allGroups.length > 0 && (
             <ul className="space-y-1">
               {allGroups.map((group) => (
-                <li key={group.id} className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors">
+                <li key={group.id} className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors" onClick={() => navigate(`/group/${group.id}`)}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <p className="text-text-primary font-medium mb-1">{group.name}</p>

@@ -82,7 +82,7 @@ function AllSecrets() {
                                         <div className="flex justify-between items-start">
                                             <div className="flex flex-col items-start gap-3">
                                                 <p className="text-text-primary font-medium">{secret.name}</p>
-                                                <p className="text-text-secondary text-sm">{secret.value}</p>
+                                                <p className="text-text-secondary text-sm">{secret.description}</p>
                                             </div>
                                             <div className="flex flex-col items-end gap-3">
                                                 <div className="bg-purple-secondary text-text-primary px-2 py-1 rounded-full text-sm font-medium w-max">
