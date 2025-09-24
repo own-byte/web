@@ -29,8 +29,8 @@ function List() {
         }
       })
 
-      if (data && data.groups) {
-        setAllGroups(data.groups)
+      if (data && data.data) {
+        setAllGroups(data.data)
       } else {
         setAllGroups([])
       }

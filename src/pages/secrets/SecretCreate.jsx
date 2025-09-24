@@ -27,9 +27,7 @@ function SecretCreate() {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log('Response:', response); // Para debug
-
-            setGroups(response.data.groups);
+            setGroups(response.data.data);
 
         } catch (error) {
             if (error.response?.status === 401) {
