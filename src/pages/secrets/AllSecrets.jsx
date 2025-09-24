@@ -32,9 +32,9 @@ function AllSecrets() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data.secrets)
+            console.log(response.data.data)
 
-            setAllSecrets(response.data.secrets)
+            setAllSecrets(response.data.data)
 
         } catch (error) {
             setError(true)

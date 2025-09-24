@@ -37,8 +37,7 @@ function GroupSecrets() {
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(responseSecret.data.secrets)
-      setAllSecrets(responseSecret.data.secrets)
+      setAllSecrets(responseSecret.data.data)
 
       const responseGroup = await api.get(`/groups/${id}`, {
         withCredentials: true,
@@ -46,7 +45,7 @@ function GroupSecrets() {
           Authorization: `Bearer ${token}`
         }
       })
-      setGroup(responseGroup.data.groups);
+      setGroup(responseGroup.data.data);
 
 
     } catch (error) {
