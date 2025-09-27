@@ -51,17 +51,11 @@ function List() {
     loadGroups()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex">
-        <div className="text-text-primary">Loading...</div>
-      </div>
-    )
-  }
+  if (loading) { return }
 
   return (
     <div className="flex flex-col w-2/7 items-start justify-start mt-1 p-1 rounded">
-      <h2 className="text-2xl font-bold text-text-primary px-1">Groups</h2>
+      <h2 className="text-2xl font-bold text-text-primary px-1 hover:cursor-pointer" onClick={() => navigate('/')}>Groups</h2>
 
       {error && (
         <p className="mt-2 text-text-secondary">Error to found groups</p>
@@ -69,10 +63,14 @@ function List() {
 
       {!error && (
         <div className="rounded-md p-1 w-full">
-          {allGroups && allGroups.length > 0 && (
+          {allGroups && allGroups.length > 0 ? (
             <ul className="space-y-1">
               {allGroups.map((group) => (
-                <li key={group.id} className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors" onClick={() => navigate(`/group/${group.id}`)}>
+                <li
+                  key={group.id}
+                  className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors"
+                  onClick={() => navigate(`/group/${group.id}`)}
+                >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <p className="text-text-primary font-medium mb-1">{group.name}</p>
@@ -85,8 +83,20 @@ function List() {
                 </li>
               ))}
             </ul>
+          ) : (
+            <div className="flex flex-col w-full h-80 justify-start gap-1 items-start">
+              <p className="text-text-secondary">No groups yet</p>
+              <button
+                className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
+                onClick={() => navigate("/group/create")}
+              >
+                New Group
+              </button>
+            </div>
+
           )}
         </div>
+
       )}
     </div>
   )

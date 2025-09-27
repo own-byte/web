@@ -2,7 +2,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 
 function Layout({ children }) {
-    const { logout, getToken } = useAuth()
+    const { logout } = useAuth()
     const navigate = useNavigate()
 
     const handleLogout = () => {

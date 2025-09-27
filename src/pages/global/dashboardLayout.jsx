@@ -9,7 +9,7 @@ function DashboardLayout({ children }) {
         <Search />
         <div className="flex flex-1 gap-2">
           <List />
-          <div className='w-5/7 items-start justify-start mt-1 p-1 rounded'>
+          <div className='w-5/7 items-start justify-start rounded'>
             {children}
           </div>
         </div>
