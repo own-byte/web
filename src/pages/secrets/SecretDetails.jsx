@@ -11,13 +11,13 @@ import "dayjs/locale/pt-br";
 import { ArrowLeft } from "lucide-react"
 import Modal from "../../components/SecretDeleteModal"
 
-function GroupSecrets() {
+function SecretDetails() {
   const { id } = useParams()
   const { logout, getToken } = useAuth()
   const navigate = useNavigate()
-  const [group, setGroup] = useState([])
-  const [allSecrets, setAllSecrets] = useState([])
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [SecretData, setSecretData] = useState();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -29,9 +29,10 @@ function GroupSecrets() {
     setShowModal(false);
   };
 
-  const deleteGroup = async () => {
+  const deleteSecret = async () => {
     try {
       setError(null)
+      setLoading(true)
 
       const token = getToken()
       if (!token) {
@@ -40,19 +41,19 @@ function GroupSecrets() {
         return
       }
 
-      const {data} = await api.delete(`/groups/${id}`, {
+      const {data} = await api.delete(`/secrets/${id}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       toast.success(data.message)
-      navigate("/")
+      navigate(-1)
 
     } catch (error) {
       setError(true)
       if (error.response) {
-        toast.error(error.response.data?.message || 'Error to delete group')
+        toast.error(error.response.data?.message || 'Error to delete secret')
       }
 
       if (error.response?.status === 401) {
@@ -60,13 +61,15 @@ function GroupSecrets() {
         navigate('/login')
       }
     } finally {
+      setLoading(false)
       setShowModal(false);
     }
   };
 
-  const loadSecrets = async () => {
+  const loadSecret = async () => {
     try {
       setError(null)
+      setLoading(true)
 
       const token = getToken()
       if (!token) {
@@ -75,45 +78,41 @@ function GroupSecrets() {
         return
       }
 
-      const responseSecret = await api.get(`/groups/${id}/secrets`, {
+      const responseSecret = await api.get(`/secrets/${id}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-      setAllSecrets(responseSecret.data.data)
-
-      const responseGroup = await api.get(`/groups/${id}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      setGroup(responseGroup.data.data);
+      setSecretData(responseSecret.data.data)
 
 
     } catch (error) {
       setError(true)
       if (error.response) {
-        toast.error(error.response.data?.message || 'Error to find secrets')
+        toast.error(error.response.data?.message || 'Error to find secret')
       }
 
       if (error.response?.status === 401) {
         logout()
         navigate('/login')
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     if (id) {
-      loadSecrets()
+      loadSecret()
     }
   }, [id])
 
+  if (loading) { return }
+
   return (
     <DashboardLayout>
-      <div className="flex flex-col  items-start justify-start mt-1 p-1 rounded gap">
+      <div className="flex flex-col items-start justify-start mt-1 p-1 rounded gap">
         <div className="flex items-center gap-1 mb-1">
           <button
             onClick={() => navigate(-1)}
@@ -121,16 +120,16 @@ function GroupSecrets() {
           >
             <ArrowLeft size={20} className="text-text-primary group-hover:cursor-pointer" />
           </button>
-          <h2 className="text-2xl font-bold text-text-primary">Group details</h2>
+          <h2 className="text-2xl font-bold text-text-primary">Secret details</h2>
         </div>
-        <div className="border border-line flex flex-col gap-2 p-1 w-full">
+        <div className="border border-line flex flex-col gap-2 p-2  w-full">
           <div className='flex items-center justify-between'>
             <div className='flex gap-2 items-center flex-1'>
               <p className="w-20 text-right">Name:</p>
               <input
                 type="text"
                 disabled
-                placeholder={group.name}
+                placeholder={SecretData.name}
                 className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
               />
             </div>
@@ -149,9 +148,41 @@ function GroupSecrets() {
             <input
               type="text"
               disabled
-              placeholder={group.description}
+              placeholder={SecretData.description}
               className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
             />
+          </div>
+
+          <div className='flex gap-2 items-center'>
+            <p className="w-20 text-right">Group:</p>
+            <input
+              type="text"
+              disabled
+              placeholder={SecretData.group}
+              className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
+            />
+          </div>
+
+          <div className='flex gap-2 items-center'>
+            <p className="w-20 text-right">Value:</p>
+            <div className='flex gap-2 flex-1'>
+              <input
+                type="text"
+                disabled
+                placeholder="**********"
+                className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1 font-mono'
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(SecretData.value)
+                  toast.success('Copied successfully');
+                }}
+                className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium'
+                title="Copy value"
+              >
+                Copy
+              </button>
+            </div>
           </div>
 
           <div className='flex gap-6'>
@@ -160,7 +191,7 @@ function GroupSecrets() {
               <input
                 type="text"
                 disabled
-                placeholder={dayjs(group.created_at).format("DD/MM/YYYY HH:mm")}
+                placeholder={dayjs(SecretData.created_at).format("DD/MM/YYYY HH:mm")}
                 className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
               />
             </div>
@@ -169,58 +200,22 @@ function GroupSecrets() {
               <input
                 type="text"
                 disabled
-                placeholder={dayjs(group.updated_at).format("DD/MM/YYYY HH:mm")}
+                placeholder={dayjs(SecretData.updated_at).format("DD/MM/YYYY HH:mm")}
                 className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
               />
             </div>
           </div>
         </div>
-
-        <h2 className="text-2xl font-bold text-text-primary px-1 mt-3">Secrets</h2>
-
-        {error && (
-          <p className="mt-2 text-text-secondary">Error to found secrets</p>
-        )}
-
-        {!error && (
-          <div className="rounded-md p-1 w-full">
-            {allSecrets && allSecrets.length > 0 ? (
-              <ul className="space-y-1">
-                {allSecrets.map((secret) => (
-                  <li key={secret.id} className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors" onClick={() => navigate(`/secret/${secret.id}`)}>
-                    <div className="flex justify-between items-start">
-                      <div className="flex flex-col items-start gap-3">
-                        <p className="text-text-primary font-medium">{secret.name}</p>
-                        <p className="text-text-secondary text-sm">{secret.description}</p>
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <p className="text-sm text-text-secondary">Updated: {dayjs(secret.updated_at).format("DD/MM/YYYY HH:mm")}</p>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className='flex flex-col items-center w-full h-80 justify-center gap-1'>
-                <img src="/disease.png" alt="Confused person" className='w-40' />
-                <p className='text-text-secondary'>No secrets here</p>
-                <button className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium" onClick={() => navigate("/secret/create")}>
-                  New Secret
-                </button>
-              </div>
-            )}
-          </div>
-        )}
         <Modal
           isOpen={showModal}
           onClose={closeModal}
-          onExecute={deleteGroup}
+          onExecute={deleteSecret}
           title="Confirm Deletion"
-          description={`The group "${group.name}" will be permanently removed.`}
+          description={`The secret "${SecretData.name}" will be permanently removed.`}
         />
       </div>
     </DashboardLayout>
   )
 }
 
-export default GroupSecrets
+export default SecretDetails

@@ -53,13 +53,7 @@ function AllSecrets() {
         loadSecrets()
     }, [])
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex">
-                <div className="text-text-primary">Loading...</div>
-            </div>
-        )
-    }
+    if (loading) { return }
 
     return (
         <DashboardLayout>
@@ -73,10 +67,14 @@ function AllSecrets() {
 
                 {!error && (
                     <div className="rounded-md p-1 w-full">
-                        {allSecrets && allSecrets.length > 0 && (
+                        {allSecrets && allSecrets.length > 0 ? (
                             <ul className="space-y-1">
                                 {allSecrets.map((secret) => (
-                                    <li key={secret.id} className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors">
+                                    <li
+                                        key={secret.id}
+                                        className="relative bg-bg-secondary border border-line p-4 rounded-lg border-l hover:bg-bg-secondary-hover cursor-pointer transition-colors"
+                                        onClick={() => navigate(`/secret/${secret.id}`)}
+                                    >
                                         <div className="flex justify-between items-start">
                                             <div className="flex flex-col items-start gap-3">
                                                 <p className="text-text-primary font-medium">{secret.name}</p>
@@ -86,15 +84,29 @@ function AllSecrets() {
                                                 <div className="bg-purple-secondary text-text-primary px-2 py-1 rounded-full text-sm font-medium w-max">
                                                     {secret.group}
                                                 </div>
-                                                <p className="text-sm text-text-secondary">Updated: {dayjs(secret.updated_at).format("DD/MM/YYYY HH:mm")}</p>
+                                                <p className="text-sm text-text-secondary">
+                                                    Updated: {dayjs(secret.updated_at).format("DD/MM/YYYY HH:mm")}
+                                                </p>
                                             </div>
                                         </div>
                                     </li>
                                 ))}
                             </ul>
+                        ) : (
+                            <div className="flex flex-col items-center w-full h-80 justify-center gap-1">
+                                <img src="/disease.png" alt="Confused person" className="w-40" />
+                                <p className="text-text-secondary">No secrets here</p>
+                                <button
+                                    className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
+                                    onClick={() => navigate("/secret/create")}
+                                >
+                                    New Secret
+                                </button>
+                            </div>
                         )}
                     </div>
                 )}
+
             </div>
         </DashboardLayout>
     )

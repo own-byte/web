@@ -11,16 +11,13 @@ import GroupCreate from "./pages/groups/GroupCreate"
 import SecretCreate from "./pages/secrets/SecretCreate"
 import AllSecrets from "./pages/secrets/AllSecrets"
 import GroupSecrets from "./pages/groups/GroupSecrets"
+import SecretDetails from "./pages/secrets/SecretDetails"
 
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useAuth()
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-white">Loading...</div>
-      </div>
-    )
+    return;
   }
 
   return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
@@ -79,6 +76,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <GroupSecrets />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/secret/:id"
+              element={
+                <ProtectedRoute>
+                  <SecretDetails />
                 </ProtectedRoute>
               }
             />
