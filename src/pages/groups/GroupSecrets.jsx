@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { ArrowLeft } from "lucide-react"
-import Modal from "../../components/SecretDeleteModal"
+import Modal from "../../components/ModalDelete"
+import ModalEdit from './ModalEdit'
 
 function GroupSecrets() {
   const { id } = useParams()
@@ -19,16 +20,14 @@ function GroupSecrets() {
   const [allSecrets, setAllSecrets] = useState([])
   const [error, setError] = useState(null)
 
+  // Group delete
   const [showModal, setShowModal] = useState(false);
-
   const openModal = () => {
     setShowModal(true);
   };
-
   const closeModal = () => {
     setShowModal(false);
   };
-
   const deleteGroup = async () => {
     try {
       setError(null)
@@ -40,7 +39,7 @@ function GroupSecrets() {
         return
       }
 
-      const {data} = await api.delete(`/groups/${id}`, {
+      const { data } = await api.delete(`/groups/${id}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`
@@ -61,6 +60,50 @@ function GroupSecrets() {
       }
     } finally {
       setShowModal(false);
+    }
+  };
+
+  // Group edit
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const openModalEdit = () => {
+    setShowModalEdit(true);
+  };
+  const closeModalEdit = () => {
+    setShowModalEdit(false);
+  };
+  const editGroup = async (formData) => {
+    try {
+      setError(null)
+      const token = getToken()
+      if (!token) {
+        logout()
+        navigate('/login')
+        return
+      }
+
+      const { data } = await api.put(`/groups/${id}`, {
+        name: formData.name,
+        description: formData.description
+      }, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      toast.success(data.message)
+      navigate("/")
+    } catch (error) {
+      setError(true)
+      if (error.response) {
+        toast.error(error.response.data?.message || 'Error to update group')
+      }
+      if (error.response?.status === 401) {
+        logout()
+        navigate('/login')
+      }
+    } finally {
+      setShowModalEdit(false);
     }
   };
 
@@ -135,7 +178,7 @@ function GroupSecrets() {
               />
             </div>
             <div className='flex gap-1 items-center ml-4'>
-              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-purple-primary transition-all cursor-pointer font-medium'>
+              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-purple-primary transition-all cursor-pointer font-medium' onClick={openModalEdit}>
                 Edit
               </button>
               <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-red-400 transition-all cursor-pointer font-medium' onClick={openModal}>
@@ -217,6 +260,12 @@ function GroupSecrets() {
           onExecute={deleteGroup}
           title="Confirm Deletion"
           description={`The group "${group.name}" will be permanently removed.`}
+        />
+        <ModalEdit
+          isOpen={showModalEdit}
+          onClose={closeModalEdit}
+          onExecute={editGroup}
+          data={group}
         />
       </div>
     </DashboardLayout>
