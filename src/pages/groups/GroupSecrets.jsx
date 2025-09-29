@@ -156,7 +156,7 @@ function GroupSecrets() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col  items-start justify-start mt-1 p-1 rounded gap">
+      <div className="flex flex-col items-start justify-start mt-1 p-1 rounded gap">
         <div className="flex items-center gap-1 mb-1">
           <button
             onClick={() => navigate(-1)}
