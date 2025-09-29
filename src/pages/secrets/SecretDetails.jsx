@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { ArrowLeft } from "lucide-react"
-import Modal from "../../components/SecretDeleteModal"
+import Modal from "../../components/ModalDelete"
+import ModalEdit from "./ModalEditSecret"
 
 function SecretDetails() {
   const { id } = useParams()
@@ -19,16 +20,14 @@ function SecretDetails() {
   const [loading, setLoading] = useState(true)
   const [SecretData, setSecretData] = useState();
 
+  // Secret delete
   const [showModal, setShowModal] = useState(false);
-
   const openModal = () => {
     setShowModal(true);
   };
-
   const closeModal = () => {
     setShowModal(false);
   };
-
   const deleteSecret = async () => {
     try {
       setError(null)
@@ -41,7 +40,7 @@ function SecretDetails() {
         return
       }
 
-      const {data} = await api.delete(`/secrets/${id}`, {
+      const { data } = await api.delete(`/secrets/${id}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`
@@ -63,6 +62,51 @@ function SecretDetails() {
     } finally {
       setLoading(false)
       setShowModal(false);
+    }
+  };
+
+  // Secret update
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const openModalEdit = () => {
+    setShowModalEdit(true);
+  };
+  const closeModalEdit = () => {
+    setShowModalEdit(false);
+  };
+  const editSecret = async (formData) => {
+    try {
+      setError(null)
+      const token = getToken()
+      if (!token) {
+        logout()
+        navigate('/login')
+        return
+      }
+
+      const { data } = await api.put(`/secrets/${id}`, {
+        name: formData.name,
+        description: formData.description,
+        value: formData.value
+      }, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      toast.success(data.message)
+      navigate("/")
+    } catch (error) {
+      setError(true)
+      if (error.response) {
+        toast.error(error.response.data?.message || 'Error to update secret')
+      }
+      if (error.response?.status === 401) {
+        logout()
+        navigate('/login')
+      }
+    } finally {
+      setShowModalEdit(false);
     }
   };
 
@@ -134,7 +178,7 @@ function SecretDetails() {
               />
             </div>
             <div className='flex gap-1 items-center ml-4'>
-              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-purple-primary transition-all cursor-pointer font-medium'>
+              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-purple-primary transition-all cursor-pointer font-medium' onClick={openModalEdit}>
                 Edit
               </button>
               <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-red-400 transition-all cursor-pointer font-medium' onClick={openModal}>
@@ -212,6 +256,12 @@ function SecretDetails() {
           onExecute={deleteSecret}
           title="Confirm Deletion"
           description={`The secret "${SecretData.name}" will be permanently removed.`}
+        />
+        <ModalEdit
+          isOpen={showModalEdit}
+          onClose={closeModalEdit}
+          onExecute={editSecret}
+          data={SecretData}
         />
       </div>
     </DashboardLayout>
