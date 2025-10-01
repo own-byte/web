@@ -10,6 +10,7 @@ function List() {
   const [allGroups, setAllGroups] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const loadGroups = async () => {
     try {
@@ -54,15 +55,42 @@ function List() {
   if (loading) { return }
 
   return (
-    <div className="flex flex-col w-2/7 items-start justify-start mt-1 p-1 rounded">
-      <h2 className="text-2xl font-bold text-text-primary px-1 hover:cursor-pointer" onClick={() => navigate('/')}>Groups</h2>
+    <div className="flex flex-col md:w-2/7 items-start justify-start mt-1 p-1 rounded">
+      <div className="flex justify-between items-center w-full px-1">
+        <h2 className="text-2xl font-bold text-text-primary hover:cursor-pointer" onClick={() => navigate('/')}>
+          Groups
+        </h2>
+
+        {/* Botão hambúrguer - visível apenas em md e abaixo */}
+        <button
+          className="md:hidden p-1 hover:bg-bg-secondary-hover rounded-lg transition-colors hover:cursor-pointer border border-line"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg
+            className="w-6 h-6 text-text-primary"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            {isMenuOpen ? (
+              <path d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
 
       {error && (
         <p className="mt-2 text-text-secondary">Error to found groups</p>
       )}
 
       {!error && (
-        <div className="rounded-md p-1 w-full">
+        <div className={`rounded-md p-1 w-full mt-1 ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
           {allGroups && allGroups.length > 0 ? (
             <ul className="space-y-1">
               {allGroups.map((group) => (
@@ -93,10 +121,8 @@ function List() {
                 New Group
               </button>
             </div>
-
           )}
         </div>
-
       )}
     </div>
   )

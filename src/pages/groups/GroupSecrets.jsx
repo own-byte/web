@@ -8,7 +8,7 @@ import api from "../../services/api"
 import { useEffect, useState } from 'react'
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import Modal from "../../components/ModalDelete"
 import ModalEdit from './ModalEdit'
 
@@ -157,34 +157,35 @@ function GroupSecrets() {
   return (
     <DashboardLayout>
       <div className="flex flex-col items-start justify-start mt-1 p-1 rounded gap">
-        <div className="flex items-center gap-1 mb-1">
-          <button
-            onClick={() => navigate(-1)}
-            className=" hover:bg-bg-secondary rounded-lg transition-colors group"
-          >
-            <ArrowLeft size={20} className="text-text-primary group-hover:cursor-pointer" />
-          </button>
-          <h2 className="text-2xl font-bold text-text-primary">Group details</h2>
+        <div className="flex items-center justify-between w-full mb-1">
+          <div className='flex items-center gap-1'>
+            <button
+              onClick={() => navigate(-1)}
+              className="hover:bg-bg-secondary rounded-lg transition-colors group"
+            >
+              <ArrowLeft size={20} className="text-text-primary group-hover:cursor-pointer" />
+            </button>
+            <h2 className="text-2xl font-bold text-text-primary">Group details</h2>
+          </div>
+          <div className='flex gap-1 items-center'>
+            <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-1.5 rounded-lg text-text-secondary transition-all cursor-pointer font-medium flex items-center justify-center' onClick={openModalEdit}>
+              <Pencil className="w-4 h-4" />
+            </button>
+            <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-1.5 rounded-lg text-text-secondary transition-all cursor-pointer font-medium flex items-center justify-center' onClick={openModal}>
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-        <div className="border border-line flex flex-col gap-2 p-1 w-full">
-          <div className='flex items-center justify-between'>
-            <div className='flex gap-2 items-center flex-1'>
-              <p className="w-20 text-right">Name:</p>
-              <input
-                type="text"
-                disabled
-                placeholder={group.name}
-                className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
-              />
-            </div>
-            <div className='flex gap-1 items-center ml-4'>
-              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-purple-primary transition-all cursor-pointer font-medium' onClick={openModalEdit}>
-                Edit
-              </button>
-              <button className='bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-3 py-0.5 rounded-lg text-red-400 transition-all cursor-pointer font-medium' onClick={openModal}>
-                Delete
-              </button>
-            </div>
+
+        <div className="border border-line rounded-md flex flex-col gap-2 p-1 w-full">
+          <div className='flex gap-2 items-center'>
+            <p className="w-20 text-right">Name:</p>
+            <input
+              type="text"
+              disabled
+              placeholder={group.name}
+              className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
+            />
           </div>
 
           <div className='flex gap-2 items-center'>
@@ -197,25 +198,24 @@ function GroupSecrets() {
             />
           </div>
 
-          <div className='flex gap-6'>
-            <div className='flex gap-2 items-center flex-1'>
-              <p className="w-20 text-right">Created:</p>
-              <input
-                type="text"
-                disabled
-                placeholder={dayjs(group.created_at).format("DD/MM/YYYY HH:mm")}
-                className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
-              />
-            </div>
-            <div className='flex gap-2 items-center flex-1'>
-              <p className="w-20 text-right">Updated:</p>
-              <input
-                type="text"
-                disabled
-                placeholder={dayjs(group.updated_at).format("DD/MM/YYYY HH:mm")}
-                className='bg-bg-secondary-hover p-1 text-text-primary border border-line rounded-md flex-1'
-              />
-            </div>
+          <div className='flex gap-2 items-center'>
+            <p className="w-20 text-right">Created:</p>
+            <input
+              type="text"
+              disabled
+              placeholder={dayjs(group.created_at).format("DD/MM/YYYY HH:mm")}
+              className='text-text-primary'
+            />
+          </div>
+
+          <div className='flex gap-2 items-center'>
+            <p className="w-20 text-right">Updated:</p>
+            <input
+              type="text"
+              disabled
+              placeholder={dayjs(group.updated_at).format("DD/MM/YYYY HH:mm")}
+              className='text-text-primary'
+            />
           </div>
         </div>
 
@@ -254,6 +254,7 @@ function GroupSecrets() {
             )}
           </div>
         )}
+
         <Modal
           isOpen={showModal}
           onClose={closeModal}

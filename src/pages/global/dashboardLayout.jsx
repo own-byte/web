@@ -7,9 +7,9 @@ function DashboardLayout({ children }) {
     <Layout>
       <div className="flex flex-col h-full gap-2">
         <Search />
-        <div className="flex flex-1 gap-2">
+        <div className="flex flex-col md:flex-row flex-1 gap-2">
           <List />
-          <div className='w-5/7 items-start justify-start rounded'>
+          <div className='w-full md:w-5/7 items-start justify-start rounded'>
             {children}
           </div>
         </div>

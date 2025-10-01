@@ -1,5 +1,6 @@
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
+import { LogOut } from "lucide-react"
 
 function Layout({ children }) {
     const { logout } = useAuth()
@@ -16,9 +17,9 @@ function Layout({ children }) {
                 <h1 onClick={() => navigate('/')} className="cursor-pointer text-2xl font-bold text-text-primary">Own Byte</h1>
                 <button
                     onClick={handleLogout}
-                    className="bg-bg-secondary border border-line px-4 py-2 rounded-lg text-red-400 hover:bg-bg-secondary-hover cursor-pointer transition-all font-medium"
+                    className="bg-bg-secondary border border-line px-4 py-2 rounded-lg text-text-primary hover:bg-bg-secondary-hover cursor-pointer transition-all font-medium"
                 >
-                    Logout
+                    <LogOut className="w-4 h-4"/>
                 </button>
             </div>
             <main className="flex-1 p-6 bg-bg-secondary border border-line rounded-lg m-10 shadow-lg">
