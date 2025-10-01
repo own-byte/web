@@ -81,7 +81,7 @@ function SecretCreate() {
 
     return (
         <DashboardLayout>
-            <div className="flex items-center justify-center">
+            <div className="mt-10 flex items-center justify-center">
                 <div className="max-w-md w-full mx-4">
                     <div className="bg-bg-secondary p-8 rounded-lg sh border border-line">
                         <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">New Secret</h2>
