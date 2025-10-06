@@ -13,8 +13,9 @@ function AllSecrets() {
     const [allSecrets, setAllSecrets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [searchTerm, setSearchTerm] = useState("")
 
-    const loadSecrets = async () => {
+    const loadSecrets = async (filter = "") => {
         try {
             setLoading(true)
             setError(null)
@@ -26,7 +27,9 @@ function AllSecrets() {
                 return
             }
 
-            const response = await api.get("/secrets/", {
+            const url = filter ? `/secrets?filter=${encodeURIComponent(filter)}` : "/secrets/"
+
+            const response = await api.get(url, {
                 withCredentials: true,
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -35,14 +38,14 @@ function AllSecrets() {
             setAllSecrets(response.data.data)
 
         } catch (error) {
-            setError(true)
-            if (error.response) {
-                toast.error(error.response.data?.message || 'Error to find secrets')
-            }
-
             if (error.response?.status === 401) {
                 logout()
                 navigate('/login')
+            } else if (error.response?.status !== 404) {
+                setError(true)
+                toast.error(error.response?.data?.message || 'Error to find secrets')
+            } else {
+                setAllSecrets([])
             }
         } finally {
             setLoading(false)
@@ -53,13 +56,29 @@ function AllSecrets() {
         loadSecrets()
     }, [])
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            loadSecrets(searchTerm)
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [searchTerm])
+
     if (loading) { return }
 
     return (
         <DashboardLayout>
-
-            <div className="flex flex-col  items-start justify-start mt-1 p-1 rounded">
-                <h2 className="text-2xl font-bold text-text-primary px-1">Secrets</h2>
+            <div className="flex flex-col items-start justify-start mt-1 p-1 rounded">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 w-full px-1 mb-1">
+                    <h2 className="text-2xl font-bold text-text-primary">Secrets</h2>
+                    <input
+                        className="bg-bg-secondary border border-line p-1 sm:p-2 md:p-2.5 rounded-lg w-full sm:w-64 md:w-80 text-sm md:text-base text-text-primary placeholder-gray-500 focus:border-purple-500/60 focus:outline-none transition-colors"
+                        type="text"
+                        placeholder="Search secrets..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
 
                 {error && (
                     <p className="mt-2 text-text-secondary">Error to found secrets</p>
@@ -95,18 +114,21 @@ function AllSecrets() {
                         ) : (
                             <div className="flex flex-col items-center w-full h-80 justify-center gap-1">
                                 <img src="/disease.png" alt="Confused person" className="w-40" />
-                                <p className="text-text-secondary">No secrets here</p>
-                                <button
-                                    className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
-                                    onClick={() => navigate("/secret/create")}
-                                >
-                                    New Secret
-                                </button>
+                                <p className="text-text-secondary">
+                                    {searchTerm ? "No secrets found" : "No secrets here"}
+                                </p>
+                                {!searchTerm && (
+                                    <button
+                                        className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
+                                        onClick={() => navigate("/secret/create")}
+                                    >
+                                        New Secret
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>
                 )}
-
             </div>
         </DashboardLayout>
     )
