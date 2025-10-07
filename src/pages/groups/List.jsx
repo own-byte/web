@@ -10,9 +10,10 @@ function List() {
   const [allGroups, setAllGroups] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
-  const loadGroups = async () => {
+  const loadGroups = async (filter = "") => {
     try {
       setLoading(true)
       setError(null)
@@ -24,7 +25,9 @@ function List() {
         return
       }
 
-      const { data } = await api.get("/groups/", {
+      const url = filter ? `/groups?filter=${encodeURIComponent(filter)}` : "/groups/"
+
+      const { data } = await api.get(url, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -36,12 +39,14 @@ function List() {
         setAllGroups([])
       }
     } catch (error) {
-      setError(true)
-      toast.error(error.message)
-
       if (error.response?.status === 401) {
         logout()
         navigate('/login')
+      } else if (error.response?.status !== 404) {
+        setError(true)
+        toast.error(error.message)
+      } else {
+        setAllGroups([])
       }
     } finally {
       setLoading(false)
@@ -52,6 +57,14 @@ function List() {
     loadGroups()
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadGroups(searchTerm)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
+
   if (loading) { return }
 
   return (
@@ -61,7 +74,6 @@ function List() {
           Groups
         </h2>
 
-        {/* Botão hambúrguer - visível apenas em md e abaixo */}
         <button
           className="md:hidden p-1 hover:bg-bg-secondary-hover rounded-lg transition-colors hover:cursor-pointer border border-line"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -91,6 +103,15 @@ function List() {
 
       {!error && (
         <div className={`rounded-md p-1 w-full mt-1 ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
+          <div className="w-full mb-1">
+            <input
+              className="bg-bg-secondary border border-line p-1 sm:p-2 md:p-2.5 rounded-lg w-full text-sm md:text-base text-text-primary placeholder-gray-500 focus:border-purple-500/60 focus:outline-none transition-colors"
+              type="text"
+              placeholder="Search groups..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           {allGroups && allGroups.length > 0 ? (
             <ul className="space-y-1">
               {allGroups.map((group) => (
@@ -113,13 +134,17 @@ function List() {
             </ul>
           ) : (
             <div className="flex flex-col w-full h-80 justify-start gap-1 items-start">
-              <p className="text-text-secondary">No groups yet</p>
-              <button
-                className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
-                onClick={() => navigate("/group/create")}
-              >
-                New Group
-              </button>
+              <p className="text-text-secondary">
+                {searchTerm ? "No groups found" : "No groups yet"}
+              </p>
+              {!searchTerm && (
+                <button
+                  className="bg-bg-secondary border border-line hover:bg-bg-secondary-hover px-2 py-1 rounded-lg text-purple-primary transition-all cursor-pointer font-medium"
+                  onClick={() => navigate("/group/create")}
+                >
+                  New Group
+                </button>
+              )}
             </div>
           )}
         </div>
