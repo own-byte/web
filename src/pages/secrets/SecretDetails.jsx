@@ -152,7 +152,18 @@ function SecretDetails() {
     }
   }, [id])
 
-  if (loading) { return }
+  if (loading) {
+    return <div className="flex justify-center items-center h-60 w-full"><span className="text-text-secondary">Carregando detalhes...</span></div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-60 w-full">
+        <span className="text-red-500 mb-2">Erro ao carregar detalhes</span>
+        <button className="mt-2 px-4 py-2 bg-purple-primary text-white rounded-md" onClick={loadSecret}>Tentar novamente</button>
+      </div>
+    );
+  }
 
   return (
     <DashboardLayout>

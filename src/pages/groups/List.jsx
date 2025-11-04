@@ -65,7 +65,18 @@ function List() {
     return () => clearTimeout(timer)
   }, [searchTerm])
 
-  if (loading) { return }
+  if (loading) {
+    return <div className="flex justify-center items-center h-60 w-full"><span className="text-text-secondary">Carregando grupos...</span></div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-60 w-full">
+        <span className="text-red-500 mb-2">Erro ao buscar grupos</span>
+        <button className="mt-2 px-4 py-2 bg-purple-primary text-white rounded-md" onClick={() => loadGroups(searchTerm)}>Tentar novamente</button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:w-2/7 items-start justify-start mt-1 p-1 rounded">

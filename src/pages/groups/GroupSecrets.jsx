@@ -19,6 +19,7 @@ function GroupSecrets() {
   const [group, setGroup] = useState([])
   const [allSecrets, setAllSecrets] = useState([])
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true);
 
   // Group delete
   const [showModal, setShowModal] = useState(false);
@@ -110,6 +111,7 @@ function GroupSecrets() {
   const loadSecrets = async () => {
     try {
       setError(null)
+      setLoading(true)
 
       const token = getToken()
       if (!token) {
@@ -145,6 +147,8 @@ function GroupSecrets() {
         logout()
         navigate('/login')
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -153,6 +157,19 @@ function GroupSecrets() {
       loadSecrets()
     }
   }, [id])
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-60 w-full"><span className="text-text-secondary">Carregando detalhes...</span></div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-60 w-full">
+        <span className="text-red-500 mb-2">Erro ao buscar detalhes</span>
+        <button className="mt-2 px-4 py-2 bg-purple-primary text-white rounded-md" onClick={loadSecrets}>Tentar novamente</button>
+      </div>
+    );
+  }
 
   return (
     <DashboardLayout>

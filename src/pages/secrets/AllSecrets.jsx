@@ -64,7 +64,18 @@ function AllSecrets() {
         return () => clearTimeout(timer)
     }, [searchTerm])
 
-    if (loading) { return }
+    if (loading) {
+        return <div className="flex justify-center items-center h-60"><span className="text-text-secondary">Carregando...</span></div>;
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col justify-center items-center h-60">
+                <span className="text-red-500 mb-2">Erro ao buscar secrets</span>
+                <button className="mt-2 px-4 py-2 bg-purple-primary text-white rounded-md" onClick={() => loadSecrets(searchTerm)}>Tentar novamente</button>
+            </div>
+        );
+    }
 
     return (
         <DashboardLayout>
