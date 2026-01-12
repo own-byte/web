@@ -40,4 +40,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/own_byte_web:v${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/meu-projeto:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/own_byte_web:v${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/own_byte_web:latest
